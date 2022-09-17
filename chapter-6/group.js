@@ -1,4 +1,6 @@
-class Group{
+import { GroupIterator } from "./iterableGroups.js";
+
+export class Group{
     constructor(){
         this.group = [];
     }
@@ -23,6 +25,10 @@ class Group{
             group.add(element);
         }
         return group;
+    }
+
+    [Symbol.iterator](){
+        return new GroupIterator(this.group);
     }
 }
 
