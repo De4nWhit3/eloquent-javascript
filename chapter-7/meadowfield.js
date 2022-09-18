@@ -57,13 +57,14 @@ class VillageState{
 function runRobot(state, robot, memory){
     for(let turn = 0;;turn++){
         if(state.parcels.length == 0){
-            console.log(`Done in ${turn} turns`);
-            break;
+            // console.log(`Done in ${turn} turns`);
+            return turn;
+            // break;
         }
         let action = robot(state, memory);
         state = state.move(action.direction);
         memory = action.memory;
-        console.log(`Moved to ${action.direction}`);
+        // console.log(`Moved to ${action.direction}`);
     }
 }
 
@@ -125,9 +126,36 @@ function goalOrientatedRobot({place, parcels}, route){
     return {direction: route[0], memory: route.slice(1)};
 }
 
+function compareRobots(robot1, robot2){
+    let state;
+    let robot1Average = [];
+    let robot2Average = [];
+
+    for(let i = 0; i < 100; i++){
+        state = VillageState.random();
+        robot1Average.push(runRobot(state, robot1.bot, robot1.memory)); // random robot
+        robot2Average.push(runRobot(state, robot2.bot, robot2.memory)); // route robot
+    }
+
+    console.log(`Robot 1 average: ${robot1Average.reduce((previous, current) => previous + current)/100}`);
+    console.log(`Robot 2 average: ${robot2Average.reduce((previous, current) => previous + current)/100}`);
+}
+
 // runRobot(VillageState.random(), randomRobot);
 // runRobot(VillageState.random(), routeRobot, []);
-runRobot(VillageState.random(), goalOrientatedRobot, []);
+// runRobot(VillageState.random(), goalOrientatedRobot, []);
+
+let robot1 = {
+    bot: goalOrientatedRobot,
+    memory: []
+}
+
+let robot2 = {
+    bot: routeRobot,
+    memory: []
+}
+
+compareRobots(robot1, robot2);
 
 // let first = new VillageState("Post Office", [{place: "Post Office", address: "Alice's House"}]);
 // let next = first.move("Alice's House");
