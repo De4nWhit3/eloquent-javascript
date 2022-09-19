@@ -57,14 +57,14 @@ class VillageState{
 function runRobot(state, robot, memory){
     for(let turn = 0;;turn++){
         if(state.parcels.length == 0){
-            // console.log(`Done in ${turn} turns`);
+            console.log(`Done in ${turn} turns`);
             return turn;
             // break;
         }
         let action = robot(state, memory);
         state = state.move(action.direction);
         memory = action.memory;
-        // console.log(`Moved to ${action.direction}`);
+        console.log(`Moved to ${action.direction}`);
     }
 }
 
@@ -143,7 +143,7 @@ function compareRobots(robot1, robot2){
 
 // runRobot(VillageState.random(), randomRobot);
 // runRobot(VillageState.random(), routeRobot, []);
-// runRobot(VillageState.random(), goalOrientatedRobot, []);
+runRobot(VillageState.random(), goalOrientatedRobot, []);
 
 let robot1 = {
     bot: goalOrientatedRobot,
@@ -155,7 +155,7 @@ let robot2 = {
     memory: []
 }
 
-compareRobots(robot1, robot2);
+// compareRobots(robot1, robot2);
 
 // let first = new VillageState("Post Office", [{place: "Post Office", address: "Alice's House"}]);
 // let next = first.move("Alice's House");
