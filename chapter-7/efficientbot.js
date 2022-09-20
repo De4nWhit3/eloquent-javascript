@@ -124,10 +124,41 @@ function goalOrientatedRobot({place, parcels}, route){
     return {direction: route[0], memory: route.slice(1)};
 }
 
-function efficientRobot(state, memory){
+function efficientRobot({place, parcels}, route){
     // set the memory to a path that has been found to be efficient
+    if(route.length == 0){
+        // describe a route for every parcel
+        let routes = parcels.map(parcel => {
+            if(parcel.place != place){
+                return {
+                    route: findRoute(roadGraph, place, parcel.place),
+                    pickUp: true
+                };
+            }else{
+                return {
+                    route: findRoute(roadGraph, place, parcel.address),
+                    pickUp: false
+                };
+            }
+        });
+
+        // This determines the precedence a route gets when choosing.
+        // Route length counts negatively, rotues that pickup a package
+        // get a small bonux
+        function score({route, pickUp}){
+            return (pickUp ? 0.5 : 0) - route.length;
+        }
+
+        route = routes.reduce((a, b) => score(a) > score(b) ? a : b).route;
+    }
+
+    return {
+        direction: route[0],
+        memory: route.slice(1)
+    };
 }
 
 // runRobot(VillageState.random(), randomRobot);
 // runRobot(VillageState.random(), routeRobot, []);
-runRobot(VillageState.random(), goalOrientatedRobot, []);
+// runRobot(VillageState.random(), goalOrientatedRobot, []);
+runRobot(VillageState.random(), efficientRobot, []);
